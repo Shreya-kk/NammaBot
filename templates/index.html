@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kannada Voice Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c1a3a 0%, #1a3a7a 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: rgba(12, 26, 58, 0.8);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .chat-header p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #1e4db3 0%, #3a7bd5 100%);
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom-left-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message-header {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .message-content {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: rgba(12, 26, 58, 0.5);
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .voice-btn {
+            background: linear-gradient(135deg, #1e4db3 0%, #3a7bd5 100%);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 77, 179, 0.4);
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(30, 77, 179, 0.6);
+        }
+
+        .voice-btn.recording {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        .status-indicator {
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 90vh;
+                border-radius: 15px;
+            }
+            
+            .chat-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .voice-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1><i class="fas fa-robot"></i> ಕನ್ನಡ ಧ್ವನಿ ಚಾಟ್ಬಾಟ್</h1>
+            <p>ನಿಮ್ಮ ಧ್ವನಿಯನ್ನು ಬಳಸಿಕೊಂಡು ಸಂವಾದಿಸಿ</p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="message-header">
+                    <i class="fas fa-robot"></i> ಚಾಟ್ಬಾಟ್
+                </div>
+                <div class="message-content">
+                    ನಮಸ್ಕಾರ! ನಾನು ಕನ್ನಡ ಧ್ವನಿ ಚಾಟ್ಬಾಟ್. ಮಾತನಾಡಲು ಮೈಕ್ರೊಫೋನ್ ಬಟನ್ ಒತ್ತಿರಿ.
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-indicator" id="statusIndicator">
+            ಸಿದ್ಧವಾಗಿದೆ
+        </div>
+        
+        <div class="chat-input">
+            <button class="voice-btn" id="voiceBtn" onclick="toggleRecording()">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Recorder.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/recorder-js@1.0.0/dist/recorder.min.js"></script>
+
+    <script>
+        let recorder, audioContext;
+        let isRecording = false;
+        const chatMessages = document.getElementById('chatMessages');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const voiceBtn = document.getElementById('voiceBtn');
+
+        function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                isRecording = true;
+                voiceBtn.classList.add('recording');
+                statusIndicator.textContent = "ಧ್ವನಿ ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲಾಗುತ್ತಿದೆ...";
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const input = audioContext.createMediaStreamSource(stream);
+
+                recorder = new Recorder(input, { numChannels: 1 });
+                recorder.record();
+                
+                statusIndicator.textContent = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭವಾಗಿದೆ. ಮಾತನಾಡಿ...";
+                
+                // Add user message placeholder
+                addMessage("ನೀವು", "ಮಾತನಾಡುತ್ತಿದ್ದೀರಿ...", "user");
+            } catch (error) {
+                console.error("Error starting recording:", error);
+                statusIndicator.textContent = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ವಿಫಲವಾಗಿದೆ";
+                isRecording = false;
+                voiceBtn.classList.remove('recording');
+            }
+        }
+
+        function stopRecording() {
+            if (!isRecording) return;
+            
+            isRecording = false;
+            voiceBtn.classList.remove('recording');
+            statusIndicator.textContent = "ರೆಕಾರ್ಡಿಂಗ್ ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ...";
+            
+            recorder.stop();
+            recorder.exportWAV(async function(blob) {
+                // Remove the "speaking..." message
+                chatMessages.removeChild(chatMessages.lastChild);
+                
+                // Simulate processing
+                statusIndicator.textContent = "ಧ್ವನಿ ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುತ್ತಿದೆ...";
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    processAudio(blob);
+                }, 1500);
+            });
+        }
+
+        function processAudio(blob) {
+            // In a real application, you would send the blob to your backend
+            // For this demo, we'll simulate a response
+            
+            // Simulate user speech recognition
+            const userTexts = [
+                "ನಮಸ್ಕಾರ, ಹೇಗಿದ್ದೀರಿ?",
+                "ಇಂದಿನ ಹವಾಮಾನ ಹೇಗಿದೆ?",
+                "ನಿಮ್ಮ ಹೆಸರು ಏನು?",
+                "ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಬಲ್ಲಿರಾ?",
+                "ನೀವು ಏನು ಮಾಡಬಲ್ಲಿರಿ?"
+            ];
+            
+            const botResponses = [
+                "ನಮಸ್ಕಾರ! ನಾನು ಚೆನ್ನಾಗಿದ್ದೇನೆ, ಧನ್ಯವಾದಗಳು. ನೀವು ಹೇಗಿದ್ದೀರಿ?",
+                "ಕ್ಷಮಿಸಿ, ನನಗೆ ಹವಾಮಾನದ ಮಾಹಿತಿ ಇಲ್ಲ. ಆದರೆ ಇಂದು ಚೆನ್ನಾಗಿರಬಹುದು ಎಂದು ಭಾವಿಸುತ್ತೇನೆ!",
+                "ನನ್ನ ಹೆಸರು ಕನ್ನಡ ಧ್ವನಿ ಚಾಟ್ಬಾಟ್. ನಿಮಗೆ ಭೇಟಿಯಾಗಲು ಸಂತೋಷ!",
+                "ಹೌದು, ನಾನು ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಬಲ್ಲೆ. ಇದು ನನ್ನ ಮುಖ್ಯ ಭಾಷೆ!",
+                "ನಾನು ನಿಮ್ಮ ಧ್ವನಿ ಇನ್ಪುಟ್ ಅನ್ನು ಕೇಳಬಲ್ಲೆ ಮತ್ತು ಕನ್ನಡದಲ್ಲಿ ಪ್ರತಿಕ್ರಿಯಿಸಬಲ್ಲೆ. ನೀವು ಮಾತನಾಡಬಹುದು ಮತ್ತು ನಾನು ಉತ್ತರಿಸುತ್ತೇನೆ!"
+            ];
+            
+            const randomIndex = Math.floor(Math.random() * userTexts.length);
+            const userText = userTexts[randomIndex];
+            const botResponse = botResponses[randomIndex];
+            
+            // Display user message
+            addMessage("ನೀವು", userText, "user");
+            
+            // Display bot response after a short delay
+            setTimeout(() => {
+                addMessage("ಚಾಟ್ಬಾಟ್", botResponse, "bot");
+                statusIndicator.textContent = "ಸಿದ್ಧವಾಗಿದೆ";
+            }, 1000);
+        }
+
+        function addMessage(sender, content, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <i class="fas ${type === 'user' ? 'fa-user' : 'fa-robot'}"></i> ${sender}
+                </div>
+                <div class="message-content">${content}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Add initial bot message
+        window.onload = function() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+    </script>
+</body>
+</html>
