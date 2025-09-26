@@ -12,7 +12,7 @@ app = Flask(__name__)
 # -----------------------------
 # Configure Gemini API
 # -----------------------------
-GEMINI_API_KEY = "AIzaSyC_WXI8fi4EqedWNoaMdbMYocPW16d2ybw"  # Replace with your Gemini API key
+GEMINI_API_KEY = "API_KEY"  # Replace with your Gemini API key
 genai.configure(api_key=GEMINI_API_KEY)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -106,3 +106,4 @@ def process_audio():
 # -----------------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
