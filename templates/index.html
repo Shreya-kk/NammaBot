@@ -1,348 +1,396 @@
 <!DOCTYPE html>
 <html lang="kn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kannada Voice Chatbot</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0c1a3a 0%, #1a3a7a 100%);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .chat-container {
-            width: 100%;
-            max-width: 800px;
-            height: 80vh;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            background: rgba(12, 26, 58, 0.8);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .chat-header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .chat-header p {
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 12px 18px;
-            border-radius: 18px;
-            position: relative;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #1e4db3 0%, #3a7bd5 100%);
-            border-bottom-right-radius: 5px;
-        }
-
-        .bot-message {
-            align-self: flex-start;
-            background: rgba(255, 255, 255, 0.1);
-            border-bottom-left-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .message-header {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .message-content {
-            font-size: 1rem;
-            line-height: 1.4;
-        }
-
-        .chat-input {
-            padding: 20px;
-            background: rgba(12, 26, 58, 0.5);
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .voice-btn {
-            background: linear-gradient(135deg, #1e4db3 0%, #3a7bd5 100%);
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(30, 77, 179, 0.4);
-        }
-
-        .voice-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(30, 77, 179, 0.6);
-        }
-
-        .voice-btn.recording {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
-        }
-
-        .status-indicator {
-            text-align: center;
-            padding: 10px;
-            font-style: italic;
-            opacity: 0.7;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Responsive design */
-        @media (max-width: 600px) {
-            .chat-container {
-                height: 90vh;
-                border-radius: 15px;
-            }
-            
-            .chat-header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .message {
-                max-width: 90%;
-            }
-            
-            .voice-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ಕನ್ನಡ ಕೃಷಿ ಚಾಟ್ಬಾಟ್</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --secondary: #4caf50;
+      --light: #e8f5e9;
+      --dark: #1b5e20;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .chatbot-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary), var(--dark));
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .chat-header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    
+    .chat-header p {
+      margin: 5px 0 0 0;
+      opacity: 0.9;
+    }
+    
+    .chat-body {
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      background: var(--light);
+    }
+    
+    .message {
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      border-radius: 15px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    
+    .user-message {
+      background: var(--secondary);
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 5px;
+    }
+    
+    .bot-message {
+      background: white;
+      color: var(--dark);
+      border: 1px solid #c8e6c9;
+      border-bottom-left-radius: 5px;
+    }
+    
+    .chat-footer {
+      padding: 20px;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .btn-record {
+      flex: 1;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .btn-record:hover {
+      background: var(--dark);
+      transform: translateY(-2px);
+    }
+    
+    .btn-record.listening {
+      background: #f44336;
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .text-input-container {
+      display: none;
+    }
+    
+    .language-selector {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    .lang-btn {
+      margin: 0 5px;
+      padding: 5px 15px;
+      border: 2px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+    
+    .lang-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .feature-list {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: var(--light);
+      border-radius: 10px;
+    }
+    
+    .feature-item i {
+      color: var(--primary);
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1><i class="fas fa-robot"></i> ಕನ್ನಡ ಧ್ವನಿ ಚಾಟ್ಬಾಟ್</h1>
-            <p>ನಿಮ್ಮ ಧ್ವನಿಯನ್ನು ಬಳಸಿಕೊಂಡು ಸಂವಾದಿಸಿ</p>
+  <div class="container">
+    <div class="chatbot-container">
+      <!-- Header -->
+      <div class="chat-header">
+        <h1><i class="fas fa-robot"></i> ಕನ್ನಡ ಕೃಷಿ ಚಾಟ್ಬಾಟ್</h1>
+        <p>ಕೃಷಿ ಮತ್ತು ಪಶುಪಾಲನೆಗೆ ಸಂಬಂಧಿಸಿದ ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತರಿಸುತ್ತೇನೆ</p>
+      </div>
+      
+      <!-- Language Selector -->
+      <div class="language-selector">
+        <button class="lang-btn active" data-lang="kn">ಕನ್ನಡ</button>
+        <button class="lang-btn" data-lang="en">English</button>
+      </div>
+      
+      <!-- Chat Body -->
+      <div class="chat-body" id="chat-log">
+        <div class="message bot-message">
+          <strong>ಚಾಟ್ಬಾಟ್:</strong> ನಮಸ್ಕಾರ! ನಾನು ಕನ್ನಡ ಕೃಷಿ ಸಹಾಯಕ. ಕೃಷಿ, ಪಶುಪಾಲನೆ, ಬೆಳೆ ರಕ್ಷಣೆ, ಅಥವಾ ಇತರೆ ಕೃಷಿ ಸಂಬಂಧಿತ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ. ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?
+        </div>
+      </div>
+      
+      <!-- Chat Footer -->
+      <div class="chat-footer">
+        <div class="controls">
+          <button id="recordBtn" class="btn-record">
+            <i class="fas fa-microphone"></i> ಮಾತನಾಡಿ (Speak)
+          </button>
+          <button id="textInputBtn" class="btn btn-outline-primary">
+            <i class="fas fa-keyboard"></i>
+          </button>
+          <button id="clearChatBtn" class="btn btn-outline-danger">
+            <i class="fas fa-trash"></i>
+          </button>
         </div>
         
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot-message">
-                <div class="message-header">
-                    <i class="fas fa-robot"></i> ಚಾಟ್ಬಾಟ್
-                </div>
-                <div class="message-content">
-                    ನಮಸ್ಕಾರ! ನಾನು ಕನ್ನಡ ಧ್ವನಿ ಚಾಟ್ಬಾಟ್. ಮಾತನಾಡಲು ಮೈಕ್ರೊಫೋನ್ ಬಟನ್ ಒತ್ತಿರಿ.
-                </div>
-            </div>
-        </div>
-        
-        <div class="status-indicator" id="statusIndicator">
-            ಸಿದ್ಧವಾಗಿದೆ
-        </div>
-        
-        <div class="chat-input">
-            <button class="voice-btn" id="voiceBtn" onclick="toggleRecording()">
-                <i class="fas fa-microphone"></i>
+        <div id="text-input-container" class="text-input-container">
+          <div class="input-group">
+            <input type="text" id="text-input" class="form-control" placeholder="ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ...">
+            <button id="send-text-btn" class="btn btn-primary">
+              <i class="fas fa-paper-plane"></i>
             </button>
+          </div>
         </div>
+        
+        <div class="mt-2 text-center">
+          <small class="text-muted">ಕೃಷಿ ಸಂಬಂಧಿತ ಪ್ರಶ್ನೆಗಳಿಗೆ ಮಾತ್ರ ಉತ್ತರ ನೀಡುತ್ತೇನೆ</small>
+        </div>
+      </div>
     </div>
+    
+    <!-- Features Section -->
+    <div class="feature-list">
+      <h4 class="text-center mb-3" style="color: var(--primary);">ನಾನು ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಲ್ಲೆ:</h4>
+      <div class="feature-item">
+        <i class="fas fa-seedling"></i>
+        <span>ಬೆಳೆ ಸಲಹೆ ಮತ್ತು ರಕ್ಷಣೆ</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-cow"></i>
+        <span>ಪಶುಪಾಲನೆ ಮತ್ತು ಆರೋಗ್ಯ</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-tint"></i>
+        <span>ನೀರಾವರಿ ಮತ್ತು ಉರವಣೆ</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-flask"></i>
+        <span>ಎರೆ ಮತ್ತು ಕೀಟನಾಶಕಗಳ ಬಗ್ಗೆ ಮಾಹಿತಿ</span>
+      </div>
+    </div>
+  </div>
 
-    <!-- Recorder.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/recorder-js@1.0.0/dist/recorder.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Chatbot functionality
+    let recognition;
+    let currentLang = "kn"; // Default to Kannada
+    let isListening = false;
 
-    <script>
-        let recorder, audioContext;
-        let isRecording = false;
-        const chatMessages = document.getElementById('chatMessages');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const voiceBtn = document.getElementById('voiceBtn');
-
-        function toggleRecording() {
-            if (isRecording) {
-                stopRecording();
-            } else {
-                startRecording();
-            }
+    // Initialize language buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentLang = this.dataset.lang;
+        
+        // Update placeholder text based on language
+        const textInput = document.getElementById('text-input');
+        if (currentLang === 'kn') {
+          textInput.placeholder = 'ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ...';
+        } else {
+          textInput.placeholder = 'Type your question here...';
         }
+      });
+    });
 
-        async function startRecording() {
-            try {
-                isRecording = true;
-                voiceBtn.classList.add('recording');
-                statusIndicator.textContent = "ಧ್ವನಿ ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲಾಗುತ್ತಿದೆ...";
-                
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const input = audioContext.createMediaStreamSource(stream);
+    // Toggle text input
+    document.getElementById('textInputBtn').addEventListener('click', function() {
+      const textInputContainer = document.getElementById('text-input-container');
+      textInputContainer.style.display = textInputContainer.style.display === 'none' ? 'block' : 'none';
+    });
 
-                recorder = new Recorder(input, { numChannels: 1 });
-                recorder.record();
-                
-                statusIndicator.textContent = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭವಾಗಿದೆ. ಮಾತನಾಡಿ...";
-                
-                // Add user message placeholder
-                addMessage("ನೀವು", "ಮಾತನಾಡುತ್ತಿದ್ದೀರಿ...", "user");
-            } catch (error) {
-                console.error("Error starting recording:", error);
-                statusIndicator.textContent = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ವಿಫಲವಾಗಿದೆ";
-                isRecording = false;
-                voiceBtn.classList.remove('recording');
-            }
+    // Clear chat
+    document.getElementById('clearChatBtn').addEventListener('click', function() {
+      const chatLog = document.getElementById('chat-log');
+      chatLog.innerHTML = `
+        <div class="message bot-message">
+          <strong>ಚಾಟ್ಬಾಟ್:</strong> ನಮಸ್ಕಾರ! ನಾನು ಕನ್ನಡ ಕೃಷಿ ಸಹಾಯಕ. ಕೃಷಿ, ಪಶುಪಾಲನೆ, ಬೆಳೆ ರಕ್ಷಣೆ, ಅಥವಾ ಇತರೆ ಕೃಷಿ ಸಂಬಂಧಿತ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ. ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?
+        </div>
+      `;
+    });
+
+    // Send text message
+    document.getElementById('send-text-btn').addEventListener('click', sendTextMessage);
+    document.getElementById('text-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendTextMessage();
+      }
+    });
+
+    function sendTextMessage() {
+      const textInput = document.getElementById('text-input');
+      const message = textInput.value.trim();
+      if (message) {
+        addMessage('user', message);
+        textInput.value = '';
+        processMessage(message);
+      }
+    }
+
+    // Add message to chat log
+    function addMessage(sender, text) {
+      const chatLog = document.getElementById('chat-log');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
+      messageDiv.innerHTML = `<strong>${sender === 'user' ? 'ನೀವು' : 'ಚಾಟ್ಬಾಟ್'}:</strong> ${text}`;
+      chatLog.appendChild(messageDiv);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Process message and get response
+    async function processMessage(message) {
+      try {
+        const res = await fetch('/chatbot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: message, lang: currentLang })
+        });
+        const data = await res.json();
+        addMessage('bot', data.reply);
+        speakText(data.reply);
+      } catch (error) {
+        console.error('Error:', error);
+        addMessage('bot', 'ಕ್ಷಮಿಸಿ, ತಾಂತ್ರಿಕ ಸಮಸ್ಯೆ ಉಂಟಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.');
+      }
+    }
+
+    // Speak text using browser's speech synthesis
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Speech Recognition Setup
+    if ('webkitSpeechRecognition' in window) {
+      recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
+
+      recognition.onstart = function() {
+        isListening = true;
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.innerHTML = '<i class="fas fa-circle"></i> Listening...';
+        recordBtn.classList.add('listening');
+      };
+
+      recognition.onend = function() {
+        isListening = false;
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.innerHTML = '<i class="fas fa-microphone"></i> ಮಾತನಾಡಿ (Speak)';
+        recordBtn.classList.remove('listening');
+      };
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        addMessage('user', transcript);
+        processMessage(transcript);
+      };
+
+      recognition.onerror = function(event) {
+        console.error('Speech recognition error', event.error);
+        addMessage('bot', 'ಕ್ಷಮಿಸಿ, ನಿಮ್ಮ ಧ್ವನಿಯನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.');
+        isListening = false;
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.innerHTML = '<i class="fas fa-microphone"></i> ಮಾತನಾಡಿ (Speak)';
+        recordBtn.classList.remove('listening');
+      };
+    } else {
+      // Browser doesn't support speech recognition
+      document.getElementById('recordBtn').disabled = true;
+      document.getElementById('recordBtn').innerHTML = '<i class="fas fa-microphone-slash"></i> Not Supported';
+      document.getElementById('recordBtn').classList.add('btn-secondary');
+    }
+
+    // Record button click event
+    document.getElementById('recordBtn').addEventListener('click', function() {
+      if (!recognition) return;
+      
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.lang = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
+        recognition.start();
+      }
+    });
+
+    // Update speech recognition language when language changes
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (recognition) {
+          recognition.lang = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
         }
-
-        function stopRecording() {
-            if (!isRecording) return;
-            
-            isRecording = false;
-            voiceBtn.classList.remove('recording');
-            statusIndicator.textContent = "ರೆಕಾರ್ಡಿಂಗ್ ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ...";
-            
-            recorder.stop();
-            recorder.exportWAV(async function(blob) {
-                // Remove the "speaking..." message
-                chatMessages.removeChild(chatMessages.lastChild);
-                
-                // Simulate processing
-                statusIndicator.textContent = "ಧ್ವನಿ ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುತ್ತಿದೆ...";
-                
-                // Simulate API call delay
-                setTimeout(() => {
-                    processAudio(blob);
-                }, 1500);
-            });
-        }
-
-        function processAudio(blob) {
-            // In a real application, you would send the blob to your backend
-            // For this demo, we'll simulate a response
-            
-            // Simulate user speech recognition
-            const userTexts = [
-                "ನಮಸ್ಕಾರ, ಹೇಗಿದ್ದೀರಿ?",
-                "ಇಂದಿನ ಹವಾಮಾನ ಹೇಗಿದೆ?",
-                "ನಿಮ್ಮ ಹೆಸರು ಏನು?",
-                "ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಬಲ್ಲಿರಾ?",
-                "ನೀವು ಏನು ಮಾಡಬಲ್ಲಿರಿ?"
-            ];
-            
-            const botResponses = [
-                "ನಮಸ್ಕಾರ! ನಾನು ಚೆನ್ನಾಗಿದ್ದೇನೆ, ಧನ್ಯವಾದಗಳು. ನೀವು ಹೇಗಿದ್ದೀರಿ?",
-                "ಕ್ಷಮಿಸಿ, ನನಗೆ ಹವಾಮಾನದ ಮಾಹಿತಿ ಇಲ್ಲ. ಆದರೆ ಇಂದು ಚೆನ್ನಾಗಿರಬಹುದು ಎಂದು ಭಾವಿಸುತ್ತೇನೆ!",
-                "ನನ್ನ ಹೆಸರು ಕನ್ನಡ ಧ್ವನಿ ಚಾಟ್ಬಾಟ್. ನಿಮಗೆ ಭೇಟಿಯಾಗಲು ಸಂತೋಷ!",
-                "ಹೌದು, ನಾನು ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಬಲ್ಲೆ. ಇದು ನನ್ನ ಮುಖ್ಯ ಭಾಷೆ!",
-                "ನಾನು ನಿಮ್ಮ ಧ್ವನಿ ಇನ್ಪುಟ್ ಅನ್ನು ಕೇಳಬಲ್ಲೆ ಮತ್ತು ಕನ್ನಡದಲ್ಲಿ ಪ್ರತಿಕ್ರಿಯಿಸಬಲ್ಲೆ. ನೀವು ಮಾತನಾಡಬಹುದು ಮತ್ತು ನಾನು ಉತ್ತರಿಸುತ್ತೇನೆ!"
-            ];
-            
-            const randomIndex = Math.floor(Math.random() * userTexts.length);
-            const userText = userTexts[randomIndex];
-            const botResponse = botResponses[randomIndex];
-            
-            // Display user message
-            addMessage("ನೀವು", userText, "user");
-            
-            // Display bot response after a short delay
-            setTimeout(() => {
-                addMessage("ಚಾಟ್ಬಾಟ್", botResponse, "bot");
-                statusIndicator.textContent = "ಸಿದ್ಧವಾಗಿದೆ";
-            }, 1000);
-        }
-
-        function addMessage(sender, content, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}-message`;
-            
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <i class="fas ${type === 'user' ? 'fa-user' : 'fa-robot'}"></i> ${sender}
-                </div>
-                <div class="message-content">${content}</div>
-            `;
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Add initial bot message
-        window.onload = function() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        };
-    </script>
+      });
+    });
+  </script>
 </body>
 </html>
